@@ -18,6 +18,13 @@ if(HERA_METERING_CONTRACT)
 endif()
 
 option(HERA_EVM2WASM "Build with evm2wasm auto-translation" OFF)
+option(HERA_EVM2WASM_JS "Build with evm2wasm.js auto-translation" OFF)
 
 target_include_directories(hera PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${evm_include_dir})
+if(HERA_EVM2WASM)
+    target_compile_definitions(hera PRIVATE HERA_EVM2WASM)
+endif()
+if(HERA_EVM2WASM_JS)
+    target_compile_definitions(hera PRIVATE HERA_EVM2WASM_JS)
+endif()
 target_link_libraries(hera PRIVATE binaryen::binaryen)
