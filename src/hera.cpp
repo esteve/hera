@@ -61,13 +61,16 @@ string mktemp_string(string pattern) {
   return string(tmp, len);
 }
 
-string evm2wasm(string const& input) {
+vector<uint8_t> evm2wasm(vector<uint8_t> const& input) {
   string fileEVM = mktemp_string("/tmp/hera.evm2wasm.evm.XXXXXXXX");
   string fileWASM = mktemp_string("/tmp/hera.evm2wasm.wasm.XXXXXXXX");
 
   ofstream os;
   os.open(fileEVM);
-  os << input;
+  // print as a hex sting
+  os << hex;
+  for (uint8_t byte: input)
+    os << static_cast<int>(byte);
   os.close();
 
   string cmd = string("evm2wasm.js ") + "-e " + fileEVM + " -o " + fileWASM;
@@ -84,7 +87,7 @@ string evm2wasm(string const& input) {
   unlink(fileEVM.c_str());
   unlink(fileWASM.c_str());
 
-  return str;
+  return vector<uint8_t>(str.begin(), str.end());
 }
 #endif
 
@@ -234,9 +237,8 @@ evm_result evm_execute(
     if (code_size < 5 || code[0] != 0 || code[1] != 'a' || code[2] != 's' || code[3] != 'm' || code[4] != 1) {
 #if HERA_EVM2WASM_JS || HERA_EVM2WASM
       // Translate EVM bytecode to WASM
-      string translated = evm2wasm(string(reinterpret_cast<const char*>(code), code_size));
-      heraAssert(translated.size() != 0, "Transcompiling via evm2wasm failed");
-      _code.assign(translated.begin(), translated.end());
+      _code = evm2wasm(code);
+      heraAssert(_code.size() != 0, "Transcompiling via evm2wasm failed");
 #else
       hera_instance* hera = static_cast<hera_instance*>(instance);
       ret.status_code = hera->fallback ? EVM_REJECTED : EVM_FAILURE;
