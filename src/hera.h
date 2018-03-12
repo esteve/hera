@@ -33,6 +33,14 @@ struct evm_instance;
 
 struct evm_instance* hera_create(void);
 
+typedef enum wasm_vm {
+  BINARYEN = 0
+/*
+  WABT = 1,
+  WAVM = 2
+*/
+} wasm_vm;
+
 #if __cplusplus
 }
 #endif
