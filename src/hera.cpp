@@ -209,7 +209,7 @@ void evm_destroy_result(evm_result const* result)
 }
 
 evm_result evm_execute(
-  evm_instance* instance,
+  evm_instance*,
   evm_context* context,
   enum evm_revision rev,
   const evm_message* msg,
