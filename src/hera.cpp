@@ -263,6 +263,14 @@ int evm_set_option(
   if (strcmp(name, "vm") == 0) {
     if (strcmp(value, "binaryen") == 0)
       hera->vm = BINARYEN;
+#if WABT_SUPPORTED
+    if (strcmp(value, "wabt") == 0)
+      hera->vm = WABT;
+#endif
+#if WAVM_SUPPORTED
+    if (strcmp(value, "wavm") == 0)
+      hera->vm = WAVM;
+#endif
     return 1;
   }
   return 0;

@@ -34,11 +34,13 @@ struct evm_instance;
 struct evm_instance* hera_create(void);
 
 typedef enum wasm_vm {
-  BINARYEN = 0
-/*
-  WABT = 1,
-  WAVM = 2
-*/
+#if WABT_SUPPORTED
+  WABT,
+#endif
+#if WAVM_SUPPORTED
+  WAVM,
+#endif
+  BINARYEN
 } wasm_vm;
 
 #if __cplusplus
