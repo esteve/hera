@@ -77,7 +77,7 @@ vector<uint8_t> evm2wasm(vector<uint8_t> const& input) {
   if (system(cmd.c_str()) != 0) {
     unlink(fileEVM.c_str());
     unlink(fileWASM.c_str());
-    return string();
+    return vector<uint8_t>();
   }
 
   ifstream is(fileWASM);
@@ -153,12 +153,6 @@ vector<uint8_t> sentinel(evm_context* context, vector<uint8_t> const& input)
   return input;
 #endif
 }
-
-#if HERA_EVM2WASM
-string evm2wasm(string const&) {
-  return string();
-}
-#endif
 
 void execute(
 	evm_context* context,
@@ -237,7 +231,7 @@ evm_result evm_execute(
     if (code_size < 5 || code[0] != 0 || code[1] != 'a' || code[2] != 's' || code[3] != 'm' || code[4] != 1) {
 #if HERA_EVM2WASM_JS || HERA_EVM2WASM
       // Translate EVM bytecode to WASM
-      _code = evm2wasm(code);
+      _code = evm2wasm(vector<uint8_t>(code, code + code_size));
       heraAssert(_code.size() != 0, "Transcompiling via evm2wasm failed");
 #else
       hera_instance* hera = static_cast<hera_instance*>(instance);
